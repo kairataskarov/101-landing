@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>101 шаг к бизнесу — настольная игра о предпринимательстве</title>
+  <meta name="description" content="Трансформационная настольная игра, которая помогает увидеть и прокачать предпринимательское мышление через действия, выбор и анализ решений.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,600;0,700;0,800;0,900;1,600&display=swap" rel="stylesheet">
+  <style>
+    /* ── VARIABLES ───────────────────────────── */
+    :root {
+      --navy:   #1D2B52;
+      --teal:   #2DAA8A;
+      --orange: #D4832A;
+      --gold:   #E8B800;
+      --slate:  #6B7AB4;
+      --cream:  #F4F2ED;
+      --white:  #FFFFFF;
+      --dark:   #0F1626;
+      --text:   #1A1A2E;
+      --muted:  #5C6380;
+    }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Montserrat', sans-serif;
+      color: var(--text);
+      overflow-x: hidden;
+      background: var(--cream);
+    }
+
+    /* ── DOT PATTERN (no gradient per brand rules) ── */
+    .dots {
+      background-color: var(--navy);
+      background-image: radial-gradient(rgba(255,255,255,0.13) 1px, transparent 1px);
+      background-size: 22px 22px;
+    }
+
+    /* ── NAV ─────────────────────────────────── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      padding: 18px 56px;
+      display: flex; align-items: center; justify-content: space-between;
+      transition: background .35s, box-shadow .35s;
+    }
+    nav.scrolled {
+      background: rgba(15,22,38,.96);
+      box-shadow: 0 2px 24px rgba(0,0,0,.3);
+    }
+    .logo { display: flex; align-items: center; gap: 8px; text-decoration: none; }
+    .logo-num { font-size: 30px; font-weight: 900; color: var(--teal); letter-spacing: -2px; }
+    .logo-txt { display: flex; flex-direction: column; line-height: 1; }
+    .logo-shag { font-size: 12px; font-weight: 600; font-style: italic; color: var(--gold); }
+    .logo-biz  { font-size: 10px; font-weight: 900; color: var(--white); letter-spacing: 1.5px; text-transform: uppercase; }
+    .nav-links { display: flex; gap: 36px; list-style: none; }
+    .nav-links a { color: rgba(255,255,255,.6); font-size: 12px; font-weight: 700; text-decoration: none; letter-spacing: .5px; transition: color .2s; }
+    .nav-links a:hover { color: var(--teal); }
+
+    /* ── HERO ────────────────────────────────── */
+    .hero {
+      min-height: 100vh;
+      display: flex; align-items: center;
+      padding: 120px 56px 100px;
+      position: relative; overflow: hidden;
+      clip-path: polygon(0 0, 100% 0, 100% calc(100% - 72px), 0 100%);
+    }
+    .hero-bg { position: absolute; inset: 0; }
+    .hero-wm {
+      position: absolute; right: 2%; top: 50%; transform: translateY(-50%);
+      font-size: clamp(180px, 20vw, 300px); font-weight: 900;
+      color: transparent; -webkit-text-stroke: 1.5px rgba(45,170,138,.12);
+      letter-spacing: -12px; line-height: 1; user-select: none; z-index: 1;
+    }
+    /* concentric circles deco */
+    .hero-circles {
+      position: absolute; right: 8%; top: 50%; transform: translateY(-50%);
+      width: 480px; height: 480px; z-index: 1;
+    }
+    .hero-circles span {
+      position: absolute; border-radius: 50%;
+      border: 1px solid rgba(45,170,138,.15);
+      top: 50%; left: 50%; transform: translate(-50%,-50%);
+    }
+    .hero-circles span:nth-child(1) { width: 100%; height: 100%; }
+    .hero-circles span:nth-child(2) { width: 72%; height: 72%; border-color: rgba(45,170,138,.1); }
+    .hero-circles span:nth-child(3) { width: 44%; height: 44%; border-color: rgba(45,170,138,.07); }
+
+    .hero-content { position: relative; z-index: 2; max-width: 680px; }
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 12px;
+      font-size: 11px; font-weight: 800; letter-spacing: 2.5px;
+      text-transform: uppercase; color: var(--teal); margin-bottom: 28px;
+    }
+    .eyebrow::before { content: ''; display: inline-block; width: 28px; height: 2px; background: var(--teal); }
+
+    h1 {
+      font-size: clamp(40px, 5.5vw, 70px);
+      font-weight: 900; line-height: 1.07;
+      color: var(--white); margin-bottom: 28px;
+    }
+    .hl-teal { color: var(--teal); }
+    .hl-orange { color: var(--orange); }
+    .hl-under {
+      position: relative; display: inline-block;
+      white-space: nowrap;
+    }
+    .hl-under svg {
+      position: absolute; left: 0; bottom: -10px;
+      width: 100%; height: 12px;
+    }
+
+    .hero-sub {
+      font-size: 17px; line-height: 1.75;
+      color: rgba(255,255,255,.65);
+      margin-bottom: 52px; max-width: 520px;
+    }
+    .hero-ctas { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
+
+    /* ── BUTTONS ─────────────────────────────── */
+    .btn-play {
+      display: inline-flex; align-items: center; gap: 16px;
+      background: var(--orange); color: #fff;
+      border: none; border-radius: 100px;
+      padding: 16px 32px 16px 18px;
+      font: 700 15px/1 'Montserrat', sans-serif;
+      cursor: pointer; text-decoration: none;
+      transition: transform .2s, background .2s;
+    }
+    .btn-play:hover { transform: scale(1.04); background: #be7222; }
+    .play-icon {
+      width: 42px; height: 42px; border-radius: 50%;
+      background: rgba(255,255,255,.2);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .play-icon::after {
+      content: '';
+      border-left: 13px solid #fff;
+      border-top: 8px solid transparent;
+      border-bottom: 8px solid transparent;
+      margin-left: 3px;
+    }
+    .btn-ghost {
+      color: rgba(255,255,255,.6);
+      font: 600 14px/1 'Montserrat',sans-serif;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(255,255,255,.3);
+      padding-bottom: 2px;
+      transition: color .2s, border-color .2s;
+    }
+    .btn-ghost:hover { color: #fff; border-color: #fff; }
+
+    .btn-dl {
+      display: inline-flex; align-items: center; gap: 12px;
+      background: var(--teal); color: #fff;
+      border: none; border-radius: 14px;
+      padding: 18px 30px;
+      font: 700 15px/1 'Montserrat',sans-serif;
+      cursor: pointer; text-decoration: none;
+      transition: transform .2s, background .2s;
+    }
+    .btn-dl:hover { transform: translateY(-3px); background: #259c7c; }
+    .btn-dl svg { width: 18px; height: 18px; flex-shrink: 0; }
+
+    /* ── SECTIONS SHARED ─────────────────────── */
+    .sec { padding: 100px 56px; }
+    .sec-label {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 11px; font-weight: 800; letter-spacing: 2.5px;
+      text-transform: uppercase; color: var(--teal);
+      margin-bottom: 18px;
+    }
+    .sec-label::before { content: ''; display: inline-block; width: 20px; height: 2px; background: var(--teal); }
+    h2.st {
+      font-size: clamp(30px, 3.8vw, 52px);
+      font-weight: 900; line-height: 1.1;
+      margin-bottom: 28px;
+    }
+
+    /* ── BLANK ───────────────────────────────── */
+    .blank-sec {
+      background: var(--cream);
+      display: flex; align-items: center; gap: 80px;
+      margin-top: -72px; /* overlap clip */
+      padding-top: 172px;
+    }
+    .blank-card {
+      flex-shrink: 0; width: 260px; height: 340px;
+      background: #fff; border-radius: 18px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.11);
+      display: flex; align-items: center; justify-content: center;
+      position: relative; overflow: hidden;
+    }
+    .blank-card::after {
+      content: ''; position: absolute; top: 0; left: 0; right: 0;
+      height: 5px; background: var(--teal);
+    }
+    .blank-ph { text-align: center; padding: 24px; color: var(--muted); }
+    .blank-ph .bi { font-size: 44px; margin-bottom: 10px; display: block; }
+    .blank-ph p { font-size: 12px; line-height: 1.5; }
+    .blank-body { flex: 1; }
+    .blank-body p { font-size: 16px; line-height: 1.8; color: var(--muted); margin-bottom: 36px; }
+
+    /* ── ABOUT ───────────────────────────────── */
+    .about-sec {
+      background: #fff;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 80px; align-items: center;
+    }
+    .about-sec p { font-size: 15px; line-height: 1.85; color: var(--muted); margin-bottom: 24px; }
+    .benefits { list-style: none; display: flex; flex-direction: column; gap: 14px; margin-top: 8px; }
+    .benefits li { display: flex; align-items: flex-start; gap: 14px; font-size: 15px; line-height: 1.5; }
+    .chk {
+      width: 24px; height: 24px; border-radius: 7px;
+      background: var(--teal); flex-shrink: 0; margin-top: 1px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .chk::after { content: '✓'; color: #fff; font-size: 12px; font-weight: 900; }
+
+    .game-box {
+      border-radius: 24px; aspect-ratio: 1; width: 100%;
+      position: relative; overflow: hidden;
+    }
+    .game-box .dots { position: absolute; inset: 0; border-radius: 24px; }
+    .game-box-inner {
+      position: relative; z-index: 2;
+      height: 100%; display: flex; align-items: center; justify-content: center;
+      flex-direction: column; gap: 8px;
+      color: rgba(255,255,255,.45); font-size: 12px; text-align: center; padding: 24px;
+    }
+    .game-box-inner .num101 { font-size: 64px; font-weight: 900; color: var(--teal); line-height: 1; }
+    .fc {
+      position: absolute;
+      background: #fff; border-radius: 12px;
+      padding: 10px 16px; font-size: 12px; font-weight: 700;
+      color: var(--navy); box-shadow: 0 8px 24px rgba(0,0,0,.12);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .fc .dot { width: 9px; height: 9px; border-radius: 50%; }
+    .fc1 { top: -16px; right: -16px; }
+    .fc2 { bottom: 32px; left: -24px; }
+
+    /* ── FOR WHOM ─────────────────────────────── */
+    .whom-sec { background: var(--navy); text-align: center; }
+    .whom-sec .sec-label { justify-content: center; }
+    .whom-sec .sec-label::before { display: none; }
+    .whom-grid {
+      display: grid; grid-template-columns: repeat(5,1fr);
+      gap: 16px; margin-top: 56px;
+    }
+    .wcard {
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.09);
+      border-radius: 20px; padding: 32px 20px; text-align: left;
+      transition: transform .25s, background .25s, border-color .25s;
+    }
+    .wcard:hover { transform: translateY(-8px); background: rgba(45,170,138,.11); border-color: rgba(45,170,138,.35); }
+    .wicon {
+      width: 52px; height: 52px; border-radius: 14px;
+      background: rgba(45,170,138,.14);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px; margin-bottom: 20px;
+    }
+    .wcard h3 { font-size: 15px; font-weight: 800; color: #fff; margin-bottom: 10px; line-height: 1.3; }
+    .wcard p  { font-size: 13px; color: rgba(255,255,255,.48); line-height: 1.65; }
+    .whom-note { margin-top: 44px; font-size: 14px; color: rgba(255,255,255,.38); font-style: italic; }
+
+    /* ── HOW ─────────────────────────────────── */
+    .how-sec { background: var(--cream); }
+    .how-sec > p { font-size: 16px; color: var(--muted); line-height: 1.75; max-width: 520px; margin-bottom: 0; }
+    .steps { margin-top: 64px; }
+    .step {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 72px; align-items: center;
+      padding: 64px 0; border-top: 1px solid rgba(0,0,0,.08);
+    }
+    .step:first-child { border-top: none; padding-top: 0; }
+    .step.rev { direction: rtl; }
+    .step.rev > * { direction: ltr; }
+    .snum {
+      font-size: clamp(80px, 10vw, 130px); font-weight: 900; line-height: 1;
+      color: transparent; -webkit-text-stroke: 2px rgba(45,170,138,.18);
+      margin-bottom: -16px;
+    }
+    .stitle { font-size: 26px; font-weight: 800; color: var(--text); margin-bottom: 14px; }
+    .sdesc  { font-size: 15px; line-height: 1.8; color: var(--muted); }
+    .svis {
+      aspect-ratio: 4/3; background: #fff;
+      border-radius: 24px; overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 12px 40px rgba(0,0,0,.07);
+      position: relative;
+    }
+    .svis::before {
+      content: ''; position: absolute;
+      left: 0; top: 0; bottom: 0; width: 5px;
+      background: var(--teal);
+    }
+    .svis-inner { text-align: center; color: var(--muted); }
+    .svis-icon { font-size: 52px; display: block; margin-bottom: 8px; }
+    .svis p { font-size: 12px; opacity: .55; }
+
+    /* ── AUTHOR ─────────────────────────────── */
+    .author-sec {
+      background: var(--navy);
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 80px; align-items: center;
+      position: relative; overflow: hidden;
+    }
+    .author-sec .dots { position: absolute; inset: 0; opacity: .4; }
+    .author-photo {
+      position: relative; z-index: 2;
+      aspect-ratio: 3/4; border-radius: 24px;
+      background: rgba(45,170,138,.08);
+      border: 1px solid rgba(45,170,138,.2);
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+    .author-ph-inner { text-align: center; color: rgba(255,255,255,.35); }
+    .author-ph-inner span { font-size: 72px; display: block; }
+    .author-ph-inner p { font-size: 11px; margin-top: 8px; line-height: 1.5; }
+    .author-info { position: relative; z-index: 2; }
+    .author-info .sec-label { color: var(--teal); }
+    .author-info .sec-label::before { background: var(--teal); }
+    .aname {
+      font-size: clamp(34px, 4vw, 58px); font-weight: 900;
+      color: #fff; line-height: 1.05; margin-bottom: 8px;
+    }
+    .atitle { font-size: 14px; color: var(--teal); font-weight: 700; margin-bottom: 32px; letter-spacing: .3px; }
+    .abio { font-size: 15px; line-height: 1.85; color: rgba(255,255,255,.6); margin-bottom: 24px; }
+    .aquote {
+      border-left: 3px solid var(--orange);
+      padding-left: 20px; margin-bottom: 28px;
+      font-size: 15px; font-style: italic;
+      color: rgba(255,255,255,.5); line-height: 1.75;
+    }
+    .atags { display: flex; flex-wrap: wrap; gap: 10px; }
+    .atag {
+      background: rgba(45,170,138,.13);
+      border: 1px solid rgba(45,170,138,.28);
+      color: var(--teal); border-radius: 100px;
+      padding: 7px 16px; font-size: 12px; font-weight: 700;
+    }
+
+    /* ── FINAL ──────────────────────────────── */
+    .final-sec {
+      min-height: 65vh; display: flex;
+      align-items: center; justify-content: center;
+      text-align: center; position: relative; overflow: hidden;
+    }
+    .final-sec .dots { position: absolute; inset: 0; }
+    .final-content { position: relative; z-index: 2; max-width: 720px; padding: 0 24px; }
+    .final-content .sec-label { justify-content: center; }
+    .final-content .sec-label::before { display: none; }
+    .ftitle {
+      font-size: clamp(36px, 5vw, 66px); font-weight: 900;
+      color: #fff; line-height: 1.08; margin-bottom: 18px;
+    }
+    .fsub {
+      font-size: 20px; color: rgba(255,255,255,.55);
+      font-style: italic; margin-bottom: 52px; line-height: 1.5;
+    }
+    .final-wm {
+      position: absolute; bottom: -80px; left: 50%; transform: translateX(-50%);
+      font-size: 220px; font-weight: 900;
+      color: transparent; -webkit-text-stroke: 1px rgba(45,170,138,.07);
+      white-space: nowrap; user-select: none; letter-spacing: -10px;
+    }
+
+    /* ── FOOTER ─────────────────────────────── */
+    footer {
+      background: var(--dark);
+      padding: 28px 56px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    footer p { color: rgba(255,255,255,.28); font-size: 12px; }
+
+    /* ── MODAL ──────────────────────────────── */
+    .modal {
+      position: fixed; inset: 0; z-index: 500;
+      background: rgba(0,0,0,.88);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none; transition: opacity .3s;
+    }
+    .modal.open { opacity: 1; pointer-events: all; }
+    .mbox {
+      background: var(--navy); border-radius: 22px;
+      padding: 48px; max-width: 500px; width: 92%;
+      text-align: center; position: relative;
+    }
+    .mclose {
+      position: absolute; top: 16px; right: 20px;
+      background: none; border: none;
+      color: rgba(255,255,255,.4); font-size: 26px; cursor: pointer; line-height: 1;
+    }
+    .mclose:hover { color: #fff; }
+    .mbox h3 { color: #fff; font-size: 22px; font-weight: 800; margin-bottom: 10px; }
+    .mbox p  { color: rgba(255,255,255,.45); font-size: 14px; line-height: 1.6; margin-bottom: 24px; }
+    .mvid {
+      width: 100%; aspect-ratio: 16/9;
+      background: rgba(0,0,0,.45); border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      color: rgba(255,255,255,.25); font-size: 13px;
+      margin-bottom: 16px;
+    }
+    .mhint { font-size: 11px !important; color: rgba(255,255,255,.2) !important; }
+
+    /* ── ANIMATIONS ─────────────────────────── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .fu  { opacity: 0; animation: fadeUp .7s ease forwards; }
+    .d1  { animation-delay: .05s; }
+    .d2  { animation-delay: .18s; }
+    .d3  { animation-delay: .30s; }
+    .d4  { animation-delay: .42s; }
+
+    /* ── RESPONSIVE ─────────────────────────── */
+    @media (max-width: 1100px) {
+      .whom-grid { grid-template-columns: repeat(3,1fr); }
+    }
+    @media (max-width: 900px) {
+      nav { padding: 14px 24px; }
+      .nav-links { display: none; }
+      .sec { padding: 72px 24px; }
+      .hero { padding: 100px 24px 80px; }
+      .blank-sec { flex-direction: column; padding-top: 140px; }
+      .blank-card { width: 100%; height: 220px; }
+      .about-sec, .author-sec { grid-template-columns: 1fr; }
+      .step { grid-template-columns: 1fr; gap: 32px; }
+      .step.rev { direction: ltr; }
+      .whom-grid { grid-template-columns: 1fr 1fr; }
+      footer { flex-direction: column; gap: 14px; text-align: center; }
+      .hero-wm, .hero-circles { display: none; }
+      .final-wm { display: none; }
+    }
+    @media (max-width: 520px) {
+      .whom-grid { grid-template-columns: 1fr; }
+      .hero-ctas { flex-direction: column; align-items: flex-start; }
+      h1 { font-size: 36px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV ─────────────────────────────────────── -->
+<nav id="nav">
+  <a href="#" class="logo">
+    <span class="logo-num">101</span>
+    <span class="logo-txt">
+      <span class="logo-shag">Шаг</span>
+      <span class="logo-biz">К БИЗНЕСУ</span>
+    </span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#about">Об игре</a></li>
+    <li><a href="#whom">Для кого</a></li>
+    <li><a href="#how">Как проходит</a></li>
+    <li><a href="#author">Об авторе</a></li>
+    <li><a href="#blank">Бланк</a></li>
+  </ul>
+</nav>
+
+<!-- HERO ────────────────────────────────────── -->
+<section class="hero dots" id="top">
+  <div class="hero-circles">
+    <span></span><span></span><span></span>
+  </div>
+  <div class="hero-wm">101</div>
+  <div class="hero-content">
+    <div class="eyebrow fu">Навыковая настольная игра</div>
+    <h1 class="fu d1">
+      Твой
+      <span class="hl-under hl-teal">тренажёр<svg viewBox="0 0 220 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 8 Q55 3 110 7 Q165 11 217 5" stroke="#2DAA8A" stroke-width="2.5" stroke-linecap="round"/></svg></span>
+      <br>предпринимательского
+      <br><span class="hl-orange">мышления</span> — в игре.
+    </h1>
+    <p class="hero-sub fu d2">
+      Безопасное пространство для финансового роста
+      и формирования реальных навыков ведения бизнеса
+      через игровой опыт.
+    </p>
+    <div class="hero-ctas fu d3">
+      <button class="btn-play" onclick="openModal()">
+        <span class="play-icon"></span>
+        Видео-инструкция
+      </button>
+      <a href="#blank" class="btn-ghost">Скачать бланк →</a>
+    </div>
+  </div>
+</section>
+
+<!-- BLANK ───────────────────────────────────── -->
+<section class="sec blank-sec" id="blank">
+  <div class="blank-card">
+    <div class="blank-ph">
+      <span class="bi">📋</span>
+      <p>Превью бланка участника<br><small style="opacity:.6">(заменить на реальное фото)</small></p>
+    </div>
+  </div>
+  <div class="blank-body">
+    <div class="sec-label">Материалы</div>
+    <h2 class="st" style="color:var(--navy)">
+      Бланк
+      <span class="hl-under hl-teal">участника<svg viewBox="0 0 180 10" fill="none" xmlns="http://www.w3.org/2000/svg" height="10" width="180"><path d="M2 6 Q45 2 90 6 Q135 10 178 4" stroke="#2DAA8A" stroke-width="2" stroke-linecap="round"/></svg></span>
+    </h2>
+    <p>Специальный бланк для удобного учёта денег, фиксации решений и понимания своей игровой стратегии. В нём ты можешь отслеживать важную информацию прямо во время игры.</p>
+    <a href="#" class="btn-dl" download>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+        <polyline points="7 10 12 15 17 10"/>
+        <line x1="12" y1="15" x2="12" y2="3"/>
+      </svg>
+      Скачать бланк для игры
+    </a>
+  </div>
+</section>
+
+<!-- ABOUT ───────────────────────────────────── -->
+<section class="sec about-sec" id="about">
+  <div class="about-text">
+    <div class="sec-label">Что это за игра</div>
+    <h2 class="st" style="color:var(--navy)">
+      Каждый ход —<br>модель <span class="hl-orange">реальной жизни</span>
+    </h2>
+    <p>«101 шаг к бизнесу» — трансформационная настольная игра, которая помогает увидеть и прокачать предпринимательское мышление через действия, выбор и анализ решений.</p>
+    <p>Решить, рискнуть или отложить, вложиться или сберечь, пойти в рост или остаться в зоне комфорта — каждый ход ставит перед тобой реальный выбор.</p>
+    <ul class="benefits">
+      <li><span class="chk"></span>Замечать свои финансовые и поведенческие стратегии</li>
+      <li><span class="chk"></span>Развивать стратегическое мышление</li>
+      <li><span class="chk"></span>Принимать решения в нестабильных условиях</li>
+      <li><span class="chk"></span>Проживать ошибки как часть роста</li>
+      <li><span class="chk"></span>Формировать взрослое отношение к деньгам</li>
+    </ul>
+  </div>
+  <div style="position:relative">
+    <div class="game-box">
+      <div class="dots" style="position:absolute;inset:0;border-radius:24px;"></div>
+      <div class="game-box-inner">
+        <span class="num101">101</span>
+        <p>Фото коробки игры<br><small style="opacity:.6">(предоставляется заказчиком)</small></p>
+      </div>
+    </div>
+    <div class="fc fc1"><span class="dot" style="background:var(--teal)"></span> Стратегия</div>
+    <div class="fc fc2"><span class="dot" style="background:var(--orange)"></span> Решения</div>
+  </div>
+</section>
+
+<!-- FOR WHOM ────────────────────────────────── -->
+<section class="sec whom-sec" id="whom">
+  <div class="sec-label" style="justify-content:center">Аудитория</div>
+  <h2 class="st" style="color:#fff">
+    Кому <span class="hl-teal">подойдёт</span> игра
+  </h2>
+  <div class="whom-grid">
+    <div class="wcard">
+      <div class="wicon">🧑‍💼</div>
+      <h3>Взрослые</h3>
+      <p>Хотят развить предпринимательское мышление и навыки принятия решений</p>
+    </div>
+    <div class="wcard">
+      <div class="wicon">👨‍👩‍👧</div>
+      <h3>Подростки и семьи</h3>
+      <p>Формирование финансовой осознанности и грамотности в игровом формате</p>
+    </div>
+    <div class="wcard">
+      <div class="wicon">🏫</div>
+      <h3>Школы и центры</h3>
+      <p>Практический инструмент обучения предпринимательству и soft skills</p>
+    </div>
+    <div class="wcard">
+      <div class="wicon">🏢</div>
+      <h3>Корпоративные команды</h3>
+      <p>Развитие ответственности, стратегии и навыков командного взаимодействия</p>
+    </div>
+    <div class="wcard">
+      <div class="wicon">🎯</div>
+      <h3>Игропрактики и коучи</h3>
+      <p>Готовый, структурированный и масштабируемый инструмент для групповой работы</p>
+    </div>
+  </div>
+  <p class="whom-note">Механика гибко адаптируется под возраст, уровень подготовки и цели группы</p>
+</section>
+
+<!-- HOW ─────────────────────────────────────── -->
+<section class="sec how-sec" id="how">
+  <div class="sec-label">Процесс</div>
+  <h2 class="st" style="color:var(--navy)">
+    Как проходит <span class="hl-teal">игровой процесс</span>
+  </h2>
+  <p>Игра проводится в группе с ведущим. Участники шаг за шагом проходят путь, принимают решения и обсуждают происходящее.</p>
+
+  <div class="steps">
+    <div class="step">
+      <div>
+        <div class="snum">01</div>
+        <div class="stitle">Принимаем решения</div>
+        <p class="sdesc">Становятся заметны сильные стороны и ограничения. Привычные модели поведения выходят на поверхность — в игровом, безопасном контексте.</p>
+      </div>
+      <div class="svis">
+        <div class="svis-inner">
+          <span class="svis-icon">🎴</span>
+          <p>Фото карточек игры<br><small>(предоставляется заказчиком)</small></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="step rev">
+      <div>
+        <div class="snum">02</div>
+        <div class="stitle">Видим последствия</div>
+        <p class="sdesc">Участники видят, как их стратегии работают в динамике — без рисков реального бизнеса, но с реальной включённостью.</p>
+      </div>
+      <div class="svis">
+        <div class="svis-inner">
+          <span class="svis-icon">🎲</span>
+          <p>Фото игрового поля<br><small>(предоставляется заказчиком)</small></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div>
+        <div class="snum">03</div>
+        <div class="stitle">Обсуждаем и осознаём</div>
+        <p class="sdesc">Через обсуждение формируются личные выводы. Игра создаёт пространство, где можно безопасно экспериментировать и наблюдать за собой.</p>
+      </div>
+      <div class="svis">
+        <div class="svis-inner">
+          <span class="svis-icon">💬</span>
+          <p>Фото обсуждения участников<br><small>(предоставляется заказчиком)</small></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="step rev">
+      <div>
+        <div class="snum">04</div>
+        <div class="stitle">Растём через ошибки</div>
+        <p class="sdesc">Опыт, полученный в игре, остаётся с участником за пределами игрового поля и становится основой для реальных решений.</p>
+      </div>
+      <div class="svis">
+        <div class="svis-inner">
+          <span class="svis-icon">📈</span>
+          <p>Фото финала игры<br><small>(предоставляется заказчиком)</small></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AUTHOR ──────────────────────────────────── -->
+<section class="sec author-sec" id="author">
+  <div class="dots"></div>
+  <div class="author-photo">
+    <div class="author-ph-inner">
+      <span>👤</span>
+      <p>Фото Руслана Шаекина<br><small style="opacity:.6">(предоставляется заказчиком)</small></p>
+    </div>
+  </div>
+  <div class="author-info">
+    <div class="sec-label">Об авторе игры</div>
+    <h2 class="aname">Руслан<br>Шаекин</h2>
+    <p class="atitle">Предприниматель · Инвестор · Автор игры</p>
+    <p class="abio">Прошёл путь от малого бизнеса до одного из наиболее успешных региональных рантье Казахстана. Реализует проекты в коммерческой недвижимости, инвестирует в стартапы Кремниевой долины. Строит международный отель Novotel в Павлодаре.</p>
+    <p class="abio">Автор и ведущий подкаста «101 друг Шаекина» — о масштабировании бизнеса, международных проектах и стратегии личного развития.</p>
+    <blockquote class="aquote">
+      Большинству людей не хватает не информации, а уверенности в принятии решений. Игра — способ передать предпринимательское мышление в живом, безопасном формате.
+    </blockquote>
+    <div class="atags">
+      <span class="atag">Недвижимость</span>
+      <span class="atag">Кремниевая долина</span>
+      <span class="atag">Novotel Павлодар</span>
+      <span class="atag">Подкаст</span>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL ───────────────────────────────────── -->
+<section class="sec final-sec dots">
+  <div class="final-content">
+    <div class="sec-label" style="justify-content:center;color:var(--teal)">Итог</div>
+    <h2 class="ftitle">
+      Игра про <span class="hl-orange">выбор</span>,<br>ответственность и рост
+    </h2>
+    <p class="fsub">Начнёшь с хода в игре — продолжишь действием в жизни.</p>
+    <button class="btn-play" onclick="openModal()" style="margin:0 auto">
+      <span class="play-icon"></span>
+      Смотреть видео-инструкцию
+    </button>
+  </div>
+  <div class="final-wm">101</div>
+</section>
+
+<!-- FOOTER ──────────────────────────────────── -->
+<footer>
+  <a href="#top" class="logo">
+    <span class="logo-num">101</span>
+    <span class="logo-txt">
+      <span class="logo-shag">Шаг</span>
+      <span class="logo-biz">К БИЗНЕСУ</span>
+    </span>
+  </a>
+  <p>© 2025 «101 шаг к бизнесу» · Настольная игра о предпринимательстве</p>
+</footer>
+
+<!-- MODAL ───────────────────────────────────── -->
+<div class="modal" id="modal" onclick="closeModal(event)">
+  <div class="mbox">
+    <button class="mclose" onclick="closeModal()">×</button>
+    <h3>Видео-инструкция</h3>
+    <p>Здесь будет встроена видео-инструкция по игре.<br>Вставьте ссылку на YouTube / Vimeo.</p>
+    <div class="mvid">▶ Вставьте iframe с видео сюда</div>
+    <p class="mhint">Нажмите вне окна или Escape, чтобы закрыть</p>
+  </div>
+</div>
+
+<script>
+  /* scrolled nav */
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 60);
+  });
+
+  /* modal */
+  function openModal() {
+    document.getElementById('modal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModal(e) {
+    if (!e || e.target === document.getElementById('modal')) {
+      document.getElementById('modal').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+  }
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+  /* scroll reveal */
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(en => {
+      if (en.isIntersecting) {
+        en.target.style.opacity = '1';
+        en.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.wcard, .step, .blank-card, .blank-body, .about-text, .about-text ~ div, .author-photo, .author-info').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(24px)';
+    el.style.transition = 'opacity .65s ease, transform .65s ease';
+    obs.observe(el);
+  });
+</script>
+</body>
+</html>
